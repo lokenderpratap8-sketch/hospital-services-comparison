@@ -1,45 +1,62 @@
-import { motion, AnimatePresence } from 'framer-motion';
+import React from 'react';
+import { motion } from 'framer-motion';
 
-export default function RankingTable({ data, onSelect }) {
+const RankingTable = ({ rankings }) => {
   return (
-    <div className="backdrop-blur-xl bg-white/5 border border-white/10 rounded-3xl overflow-hidden shadow-2xl">
-      <table className="w-full text-left border-collapse">
-        <thead className="bg-white/5 text-cyan-400 text-sm uppercase">
-          <tr>
-            <th className="p-4">Rank</th>
-            <th className="p-4">Hospital</th>
-            <th className="p-4">Location</th>
-            <th className="p-4">Score</th>
-            <th className="p-4 text-right">Avg. Cost</th>
-          </tr>
-        </thead>
-        <tbody>
-          <AnimatePresence>
-            {data.map((h, index) => (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.2 }}
+      className="bg-white rounded-lg shadow-lg p-6"
+    >
+      <h2 className="text-2xl font-semibold text-gray-800 mb-4">Hospital Rankings</h2>
+      <div className="overflow-x-auto">
+        <table className="w-full table-auto">
+          <thead>
+            <tr className="border-b">
+              <th className="text-left py-2 px-4 font-semibold text-gray-700">Rank</th>
+              <th className="text-left py-2 px-4 font-semibold text-gray-700">Hospital</th>
+              <th className="text-left py-2 px-4 font-semibold text-gray-700">Score</th>
+              <th className="text-left py-2 px-4 font-semibold text-gray-700">Location</th>
+            </tr>
+          </thead>
+          <tbody>
+            {rankings.map((ranking, index) => (
               <motion.tr
-                layout
-                key={h.id}
-                onClick={() => onSelect(h)}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                className={`cursor-pointer transition-colors hover:bg-white/5 border-b border-white/5 ${
-                  index === 0 ? "relative ring-2 ring-cyan-500 ring-inset shadow-[0_0_20px_rgba(6,182,212,0.3)] animate-pulse-subtle" : ""
-                }`}
+                key={ranking.hospital.id}
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: index * 0.1 }}
+                className="border-b hover:bg-gray-50"
               >
-                <td className="p-4 font-bold">
-                  {index === 0 && <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-cyan-500 text-slate-950 text-[10px] px-2 py-0.5 rounded-full font-black uppercase">Top Choice</span>}
-                  #{index + 1}
+                <td className="py-3 px-4">
+                  <span className={`inline-flex items-center justify-center w-8 h-8 rounded-full text-sm font-bold ${
+                    index === 0 ? 'bg-green-100 text-green-800' :
+                    index === 1 ? 'bg-blue-100 text-blue-800' :
+                    index === 2 ? 'bg-yellow-100 text-yellow-800' :
+                    'bg-gray-100 text-gray-800'
+                  }`}>
+                    {index + 1}
+                  </span>
                 </td>
-                <td className="p-4 font-semibold">{h.name}</td>
-                <td className="p-4 text-slate-400">{h.location}</td>
-                <td className="p-4 text-cyan-400">{h.topsisScore}</td>
-                <td className="p-4 text-right">₹{h.cost.toLocaleString('en-IN')}</td>
+                <td className="py-3 px-4 font-medium text-gray-800">
+                  {ranking.hospital.name}
+                </td>
+                <td className="py-3 px-4">
+                  <span className="font-mono text-sm">
+                    {ranking.score.toFixed(4)}
+                  </span>
+                </td>
+                <td className="py-3 px-4 text-gray-600">
+                  {ranking.hospital.location}
+                </td>
               </motion.tr>
             ))}
-          </AnimatePresence>
-        </tbody>
-      </table>
-    </div>
+          </tbody>
+        </table>
+      </div>
+    </motion.div>
   );
-}
+};
+
+export default RankingTable;
